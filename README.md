@@ -26,7 +26,7 @@ Download datasets from the original public sources:
 - DLPFC: https://research.libd.org/spatialLIBD/
 - Mouse Brain Serial Sections: https://www.10xgenomics.com/resources/datasets
 - Coronal Mouse Brain: https://www.10xgenomics.com/resources/datasets
-- Human Breast Cancer: https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1
+- Human Breast Cancer: https://singlecell.broadinstitute.org/single_cell/study/SCP1256/visium-demo-study
 - Mouse Embryo MOSTA: https://db.cngb.org/stomics/mosta/download/
 
 More detailed dataset links are listed in `dataset/README.md`.

@@ -26,8 +26,9 @@ This repository does not commit raw datasets. Download the data from the origina
 ## Human Breast Cancer
 
 - Source: 10x Genomics Visium Human Breast Cancer Block A Section 1.
-- URL: https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1
-- Mirror/study page: https://singlecell.broadinstitute.org/single_cell/study/SCP1256/visium-demo-study
+- Study page: https://singlecell.broadinstitute.org/single_cell/study/SCP1256/visium-demo-study
+- Filtered matrix: https://cf.10xgenomics.com/samples/spatial-exp/1.1.0/V1_Breast_Cancer_Block_A_Section_1/V1_Breast_Cancer_Block_A_Section_1_filtered_feature_bc_matrix.h5
+- Spatial files: https://cf.10xgenomics.com/samples/spatial-exp/1.1.0/V1_Breast_Cancer_Block_A_Section_1/V1_Breast_Cancer_Block_A_Section_1_spatial.tar.gz
 
 ## Mouse Embryo
 
