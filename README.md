@@ -57,17 +57,7 @@ python -m model.cluster \
 
 ## Reproduction: DLPFC 151673
 
-Download DLPFC sample `151673` from spatialLIBD and prepare:
-
-```text
-dataset/DLPFC/151673.h5ad
-```
-
-The file should include:
-
-```text
-adata.obs["sce.layer_guess"]
-```
+Download DLPFC sample `151673` from spatialLIBD and place it at `dataset/DLPFC/151673.h5ad`.
 
 Set deterministic runtime variables:
 
@@ -82,29 +72,11 @@ export CUBLAS_WORKSPACE_CONFIG=:4096:8
 export CUDA_VISIBLE_DEVICES=0
 ```
 
-Remove spots without layer labels:
-
-```bash
-python - <<'PY'
-import os
-import anndata as ad
-
-h5_in = "dataset/DLPFC/151673.h5ad"
-h5_out = "outputs/DLPFC/151673/151673_dropNaN.h5ad"
-
-os.makedirs(os.path.dirname(h5_out), exist_ok=True)
-adata = ad.read_h5ad(h5_in)
-mask = adata.obs["sce.layer_guess"].notna()
-print(f"151673 cleanup: original={adata.n_obs}, kept={mask.sum()}, removed={(~mask).sum()}")
-adata[mask].write_h5ad(h5_out)
-PY
-```
-
 Train SAGA-ST embeddings:
 
 ```bash
 python -m model.main \
-  --h5 "outputs/DLPFC/151673/151673_dropNaN.h5ad" \
+  --h5 "dataset/DLPFC/151673.h5ad" \
   --out_prefix "outputs/DLPFC/151673/151673_base" \
   --k 15 \
   --use_scanpy_workflow --pca_comps 64 \
@@ -127,7 +99,7 @@ Cluster and evaluate:
 ```bash
 python -m model.cluster \
   --npz "outputs/DLPFC/151673/151673_base.augK2_d64_for_cluster.npz" \
-  --h5 "outputs/DLPFC/151673/151673_dropNaN.h5ad" \
+  --h5 "dataset/DLPFC/151673.h5ad" \
   --label_key "sce.layer_guess" \
   --method mclust \
   --use_rep emb \
@@ -141,10 +113,4 @@ python -m model.cluster \
   --min_cluster_size 30 \
   --calc_acc \
   --out_prefix "outputs/DLPFC/151673/151673_base_merge30"
-```
-
-Results are written to:
-
-```text
-outputs/DLPFC/151673/cluster_results/
 ```
