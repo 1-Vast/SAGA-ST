@@ -31,31 +31,7 @@ Download datasets from the original public sources:
 
 More detailed dataset links are listed in `dataset/README.md`.
 
-## Usage
-
-Prepare an `.h5ad` file with `adata.X` and `adata.obsm["spatial"]`, then train embeddings:
-
-```bash
-python -m model.main \
-  --h5 path/to/sample.h5ad \
-  --out_prefix outputs/sample \
-  --use_scanpy_workflow \
-  --device cuda
-```
-
-Cluster the learned embeddings:
-
-```bash
-python -m model.cluster \
-  --npz outputs/sample.augK2_d64_for_cluster.npz \
-  --h5 path/to/sample.h5ad \
-  --label_key "sce.layer_guess" \
-  --method mclust \
-  --n_clusters 7 \
-  --out_prefix outputs/sample_cluster
-```
-
-## Reproduction: DLPFC 151673
+## Usage and Reproduction
 
 Download DLPFC sample `151673` from spatialLIBD and place it at `dataset/DLPFC/151673.h5ad`.
 
