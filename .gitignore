@@ -29,8 +29,7 @@ env/
 !/dataset/
 !/dataset/README.md
 
-/demo/paper/others/
-/demo/**/cluster_results/
+/demo/**
 
 *.h5ad
 *.h5
@@ -44,6 +43,7 @@ env/
 
 *.pdf
 *.png
+!/model.png
 *.jpg
 *.jpeg
 *.tif

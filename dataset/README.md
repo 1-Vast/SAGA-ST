@@ -1,61 +1,36 @@
-# Dataset Layout
+# Dataset Download Sources
 
-本目录用于放置论文复现实验所需数据。由于 `.h5ad`、`.npz`、10x 原始矩阵和图像文件通常较大，这些文件默认不提交到 Git。请从论文数据来源、公开数据库或作者提供的归档中下载后，按下面结构放置。
+This repository does not commit raw datasets. Download the data from the original public sources listed below.
 
-## Expected Structure
+## DLPFC
 
-```text
-dataset/
-+-- DLPFC/
-|   +-- 151507.h5ad
-|   +-- 151508.h5ad
-|   +-- ...
-|   +-- 151676.h5ad
-+-- Brain/
-|   +-- Mouse Brain Serial Section 1/
-|   |   +-- Sagittal-Anterior/
-|   |   +-- Sagittal-Posterior/
-|   +-- Mouse Brain Serial Section 2/
-|       +-- Sagittal-Anterior/
-|       +-- Sagittal-Posterior/
-+-- coronal mouse brain/
-|   +-- mouse_brain_with_allen_label.h5ad
-+-- Human_Breast_Cancer/
-|   +-- breast_with_gt.h5ad
-|   +-- metadata.tsv
-|   +-- V1_Human_Breast_Cancer_Block_A_Section_1/
-+-- Mouse embryo/
-    +-- E11.5_E1S1.MOSTA.h5ad
-    +-- E12.5_E1S2.MOSTA.h5ad
-    +-- ...
-```
+- Source: spatialLIBD, LIBD Human DLPFC 10x Genomics Visium data.
+- URL: https://research.libd.org/spatialLIBD/
+- Interactive/raw-data portal: https://spatial.libd.org/spatialLIBD/
+- Use sample `151673` for the reproducibility command in `REPRODUCIBILITY.md`.
+- Required annotation for the reproduction command: `sce.layer_guess`.
 
-## Required AnnData Fields
+## Mouse Brain Serial Sections
 
-`model.main` 训练入口要求输入 `.h5ad` 至少包含：
+- Source: 10x Genomics Visium mouse brain serial section datasets.
+- Section 1, Sagittal-Anterior: https://www.10xgenomics.com/datasets/mouse-brain-serial-section-1-sagittal-anterior-1-standard-1-0-0
+- Section 1, Sagittal-Posterior: https://www.10xgenomics.com/datasets/mouse-brain-serial-section-1-sagittal-posterior-1-standard-1-0-0
+- Section 2, Sagittal-Anterior: https://www.10xgenomics.com/datasets/mouse-brain-serial-section-2-sagittal-anterior-1-standard-1-1-0
+- Section 2, Sagittal-Posterior: https://www.10xgenomics.com/datasets/mouse-brain-serial-section-2-sagittal-posterior-1-standard-1-1-0
 
-- `adata.X`：表达矩阵。
-- `adata.obsm["spatial"]`：空间坐标。
+## Coronal Mouse Brain
 
-如果需要评估聚类指标，`model.cluster` 还需要指定标签列，例如：
+- Source: 10x Genomics Visium adult mouse brain coronal dataset.
+- URL: https://www.10xgenomics.com/datasets/mouse-brain-section-coronal-1-standard-1-0-0
 
-- `Ground Truth`
-- `spatial_domain`
-- `allen_cluster`
+## Human Breast Cancer
 
-使用示例：
+- Source: 10x Genomics Visium Human Breast Cancer Block A Section 1.
+- URL: https://support.10xgenomics.com/spatial-gene-expression/datasets/1.1.0/V1_Breast_Cancer_Block_A_Section_1
+- Mirror/study page: https://singlecell.broadinstitute.org/single_cell/study/SCP1256/visium-demo-study
 
-```bash
-python -m model.cluster \
-  --npz "outputs/example.augK2_d64_for_cluster.npz" \
-  --h5 "dataset/DLPFC/151507.h5ad" \
-  --label_key "Ground Truth" \
-  --method mclust \
-  --n_clusters 7
-```
+## Mouse Embryo
 
-## Versioning Policy
-
-- 原始数据和中间结果保存在本地或外部数据仓库。
-- Git 仓库只保存代码、环境、复现说明和必要的小型文本配置。
-- 如果后续发布数据下载链接，请在本文件补充 URL、文件大小、版本日期和校验和。
+- Source: MOSTA, Mouse Organogenesis Spatiotemporal Transcriptomic Atlas.
+- URL: https://db.cngb.org/stomics/mosta/download/
+- Download the corresponding `.MOSTA.h5ad` files, such as `E11.5_E1S1.MOSTA.h5ad`, `E12.5_E1S2.MOSTA.h5ad`, `E13.5_E1S4.MOSTA.h5ad`, and `E14.5_E1S3.MOSTA.h5ad`.
