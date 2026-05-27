@@ -1,0 +1,100 @@
+python - <<'PY'
+import anndata as ad, pandas as pd
+h5="/root/autodl-tmp/DLPFC/151674.h5ad"
+out="/root/autodl-tmp/DLPFC/151674_dropNaN.h5ad"
+adata=ad.read_h5ad(h5)
+m = adata.obs["sce.layer_guess"].notna()
+print("before:", adata.n_obs, "after:", m.sum(), "dropped:", (~m).sum())
+adata[m].write_h5ad(out)
+print("saved:", out)
+PY
+
+unset OMP_NUM_THREADS
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+export OPENBLAS_NUM_THREADS=2
+export NUMEXPR_NUM_THREADS=2
+export NUMBA_THREADING_LAYER=workqueue
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
+export CUDA_VISIBLE_DEVICES=0
+
+python -m model.main \
+  --h5 "/root/autodl-tmp/DLPFC/151674_dropNaN.h5ad" \
+  --out_prefix "/root/autodl-tmp/DLPFC/151674_BASELINE" \
+  --graph_model KNN --k 15 \
+  --use_scanpy_workflow --pca_comps 64 \
+  --dim 64 --K 2 --embed_agg concat --hidden 512 \
+  --alpha 0.5 --topN 50 \
+  --lambda_recon 0.05 --mask_ratio_feat 0.2 \
+  --epochs 1200 --pos_per_epoch 20000 \
+  --layer_aware --no_layer_fallback \
+  --pseudo_layer_bins 7 --pseudo_layer_knn 20 \
+  --neg_layer_margin 2 --layer_gamma 2.0 \
+  --neg_hard_ratio 0.6 --neg_oversample 8 \
+  --normal_aware --normal_knn 15 --normal_margin 1.0 --normal_gamma 2.0 \
+  --activation prelu --scheduler \
+  --lr 5e-4 --weight_decay 1e-4 \
+  --seed 42 --device cuda
+
+python -m model.cluster \
+  --npz "/root/autodl-tmp/DLPFC/151674_BASELINE.augK2_d64_for_cluster.npz" \
+  --h5 "/root/autodl-tmp/DLPFC/151674_dropNaN.h5ad" \
+  --label_key "sce.layer_guess" \
+  --method mclust \
+  --use_rep emb \
+  --pca_dim 22 \
+  --n_clusters 8 \
+  --smooth \
+  --smooth_k 6 \
+  --refine \
+  --refine_iter 2 \
+  --refine_k 12 \
+  --merge_small \
+  --min_cluster_size 50 \
+  --calc_acc \
+  --progress \
+  --out_prefix "/root/autodl-tmp/DLPFC/151674_best_clean_v3"
+--------------------------------------------------
+📊 Clustering Metrics Summary
+Number of clusters: 6
+NMI: 0.7216
+ARI: 0.6548
+ACC: 0.7728
+Silhouette Score: 0.1595
+Calinski–Harabasz: 578.1434
+Davies–Bouldin: 1.7556
+Largest cluster size: 1016.0000
+Smallest cluster size: 244.0000
+Cluster size ratio (max/min): 4.1639
+Cluster distribution entropy: 2.4596
+--------------------------------------------------
+
+python -m model.cluster \
+  --npz "/root/autodl-tmp/DLPFC/tuning_results/run_k10_g4.0_hr0.7.augK2_d64_for_cluster.npz" \
+  --h5 "/root/autodl-tmp/DLPFC/151674_dropNaN.h5ad" \
+  --label_key sce.layer_guess \
+  --method mclust \
+  --use_rep emb \
+  --pca_dim 50 \
+  --n_clusters 7 \
+  --smooth \
+  --smooth_k 6 \
+  --refine \
+  --refine_iter 1 \
+  --calc_acc \
+  --progress
+
+--------------------------------------------------
+📊 Clustering Metrics Summary
+Number of clusters: 7
+NMI: 0.6277
+ARI: 0.5805
+ACC: 0.7455
+Silhouette Score: 0.1771
+Calinski–Harabasz: 496.3124
+Davies–Bouldin: 1.9996
+Largest cluster size: 932.0000
+Smallest cluster size: 22.0000
+Cluster size ratio (max/min): 42.3636
+Cluster distribution entropy: 2.5095
+--------------------------------------------------

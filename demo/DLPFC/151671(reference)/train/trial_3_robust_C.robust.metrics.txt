@@ -1,0 +1,11 @@
+n_clusters	5
+NMI	0.7095787658448139
+ARI	0.7115957892372838
+ACC	0.8323967749816761
+Silhouette	0.04296555742621422
+Calinski_Harabasz	136.67088317871094
+Davies_Bouldin	5.245931779695942
+largest_cluster_size	1634.0
+smallest_cluster_size	207.0
+cluster_size_ratio_max_min	7.893719806763285
+cluster_distribution_entropy	2.057385510166043

@@ -1,0 +1,41 @@
+python - <<'PY'
+import anndata as ad
+h5_in = "/root/autodl-tmp/Spatial-main/dataset/DLPFC/151671.h5ad"
+h5_out = "/root/autodl-tmp/DLPFC/151671_dropNaN.h5ad"
+adata = ad.read_h5ad(h5_in)
+mask = adata.obs["sce.layer_guess"].notna()
+print(f"151671 数据清洗: 原始 {adata.n_obs}，清洗后 {mask.sum()}，删除 { (~mask).sum() } 个空值")
+adata[mask].write_h5ad(h5_out)
+PY
+
+unset OMP_NUM_THREADS
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+export OPENBLAS_NUM_THREADS=2
+export NUMEXPR_NUM_THREADS=2
+export NUMBA_THREADING_LAYER=workqueue
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
+export CUDA_VISIBLE_DEVICES=0
+
+python -m model.cluster \
+  --npz "/root/autodl-tmp/DLPFC/search_50_trials/trial_21.augK2_d64_for_cluster.npz" \
+  --h5 "/root/autodl-tmp/DLPFC/151671_dropNaN.h5ad" \
+  --label_key "sce.layer_guess" \
+  --method robust --use_rep emb --n_clusters 5 \
+  --w_spa 0.3 --w_emb 0.7 --knn_k 10 \
+  --refine_k 6 --refine_iter 4 --calc_acc
+  
+--------------------------------------------------
+📊 Clustering Metrics Summary
+Number of clusters: 5
+NMI: 0.7647
+ARI: 0.8174
+ACC: 0.8796
+Silhouette Score: 0.0272
+Calinski–Harabasz: 111.1706
+Davies–Bouldin: 4.8914
+Largest cluster size: 1923.0000
+Smallest cluster size: 49.0000
+Cluster size ratio (max/min): 39.2449
+Cluster distribution entropy: 1.8705
+--------------------------------------------------

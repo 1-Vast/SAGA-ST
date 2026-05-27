@@ -1,0 +1,47 @@
+CUDA_VISIBLE_DEVICES=0 python -m model.main \
+  --h5 "/root/autodl-tmp/DLPFC/151508.h5ad" \
+  --out_prefix "/root/autodl-tmp/DLPFC/151508_BASE" \
+  --use_scanpy_workflow --pca_comps 50 \
+  --graph_model KNN --k 15 \
+  --dim 64 --K 2 --hidden 512 --embed_agg concat \
+  --alpha 0.45 --topN 60 \
+  --lambda_recon 5.0 --mask_ratio_feat 0.5 \
+  --epochs 500 --pos_per_epoch 15000 \
+  --layer_aware --no_layer_fallback \
+  --pseudo_layer_bins 12 \
+  --neg_layer_margin 2 --layer_gamma 8.0 \
+  --normal_aware --normal_knn 30 --normal_margin 1.5 --normal_gamma 4.0 \
+  --neg_hard_ratio 0.6 --neg_oversample 20 \
+  --activation prelu --scheduler \
+  --lr 0.001 --weight_decay 0.03 --seed 42 --device cuda
+
+python -m model.cluster \
+  --npz "/root/autodl-tmp/DLPFC/151508_BASE.augK2_d64_for_cluster.npz" \
+  --h5 "/root/autodl-tmp/DLPFC/151508.h5ad" \
+  --label_key sce.layer_guess \
+  --method robust \
+  --n_clusters 7 \
+  --knn_k 12 \
+  --resolution 0.55 \
+  --w_spa 0.45 --w_emb 0.55 \
+  --pca_dim 40 \
+  --pca_key X_pca_40 \
+  --robust_smooth_iter 1 \
+  --refine_k 20 --refine_iter 1 \
+  --calc_acc \
+  --out_prefix /root/autodl-tmp/DLPFC/151508_TUNED_try1
+
+--------------------------------------------------
+📊 Clustering Metrics Summary
+Number of clusters: 7
+NMI: 0.6700
+ARI: 0.5856
+ACC: 0.7030
+Silhouette Score: 0.0332
+Calinski–Harabasz: 110.2155
+Davies–Bouldin: 4.2299
+Largest cluster size: 1142.0000
+Smallest cluster size: 142.0000
+Cluster size ratio (max/min): 8.0423
+Cluster distribution entropy: 2.5645
+--------------------------------------------------

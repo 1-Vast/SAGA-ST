@@ -1,0 +1,48 @@
+root@autodl-container-daad408351-dbb7d4f9:~/autodl-tmp/SpatialDOM# python -m model.main \
+  --h5 "/root/autodl-tmp/DLPFC/151509.h5ad" \
+  --out_prefix "/root/autodl-tmp/DLPFC/151509_baseline_k15" \
+  --use_scanpy_workflow \
+  --graph_model KNN --k 15 \
+  --pca_comps 64 \
+  --dim 96 --K 3 \
+  --epochs 2000 \
+  --pos_per_epoch 18000 \
+  --scheduler \
+  --lambda_recon 0.0 \
+  --mask_ratio_feat 0.2 \
+  --layer_aware \
+  --pseudo_layer_bins 12\
+  --neg_layer_margin 2 \
+  --layer_gamma 2.0 \
+  --neg_hard_ratio 0.85 \
+  --neg_oversample 10 \
+  --normal_aware \
+  --normal_knn 30 --normal_margin 1.5 --normal_gamma 3.0
+
+root@autodl-container-daad408351-dbb7d4f9:~/autodl-tmp/SpatialDOM# python -m model.cluster \
+  --npz "/root/autodl-tmp/DLPFC/151509_baseline_k15.augK3_d96_for_cluster.npz" \
+  --h5  "/root/autodl-tmp/DLPFC/151509.h5ad" \
+  --label_key "sce.layer_guess" \
+  --method robust \
+  --n_clusters 7 \
+  --knn_k 26 \
+  --w_spa 0.35 --w_emb 0.65 \
+  --resolution 0.85 \
+  --robust_res_list "0.70,0.80,0.85,0.90,1.00" \
+  --calc_acc \
+  --out_prefix "/root/autodl-tmp/DLPFC/151509"
+
+--------------------------------------------------
+📊 Clustering Metrics Summary
+Number of clusters: 7
+NMI: 0.7237
+ARI: 0.6352
+ACC: 0.7644
+Silhouette Score: 0.1615
+Calinski–Harabasz: 216.0850
+Davies–Bouldin: 1.9083
+Largest cluster size: 1224.0000
+Smallest cluster size: 171.0000
+Cluster size ratio (max/min): 7.1579
+Cluster distribution entropy: 2.6129
+--------------------------------------------------

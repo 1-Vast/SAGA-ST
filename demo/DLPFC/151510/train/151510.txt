@@ -1,0 +1,64 @@
+python - <<'PY'
+import anndata as ad
+h5_in = "/root/autodl-tmp/DLPFC/151510.h5ad"
+h5_out = "/root/autodl-tmp/DLPFC/151510_dropNaN.h5ad"
+adata = ad.read_h5ad(h5_in)
+mask = adata.obs["sce.layer_guess"].notna()
+print(f"151510 数据清洗: 原始 {adata.n_obs}，清洗后 {mask.sum()}，删除 { (~mask).sum() } 个空值")
+adata[mask].write_h5ad(h5_out)
+PY
+
+unset OMP_NUM_THREADS
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+export OPENBLAS_NUM_THREADS=2
+export NUMEXPR_NUM_THREADS=2
+export NUMBA_THREADING_LAYER=workqueue
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
+export CUDA_VISIBLE_DEVICES=0
+
+python -m model.main \
+  --h5 "/root/autodl-tmp/DLPFC/151510_dropNaN.h5ad" \
+  --out_prefix "/root/autodl-tmp/DLPFC/151510_Masterpiece" \
+  --use_scanpy_workflow --pca_comps 50 \
+  --graph_model KNN --k 12 \
+  --dim 64 --K 2 --hidden 512 --embed_agg concat \
+  --alpha 0.40 --topN 60 \
+  --lambda_recon 0.4 --mask_ratio_feat 0.4 \
+  --epochs 500 --pos_per_epoch 15000 \
+  --layer_aware --no_layer_fallback \
+  --pseudo_layer_bins 12 \
+  --neg_layer_margin 1 --layer_gamma 6.0 \
+  --normal_aware --normal_knn 30 --normal_margin 1.0 --normal_gamma 2.0 \
+  --neg_hard_ratio 0.85 --neg_oversample 5 \
+  --activation prelu --scheduler \
+  --lr 0.001 --weight_decay 0.02 --seed 42 --device cuda
+
+python -m model.cluster \
+  --npz "/root/autodl-tmp/DLPFC/151510_Masterpiece.augK2_d64_for_cluster.npz" \
+  --h5 "/root/autodl-tmp/DLPFC/151510.h5ad" \
+  --label_key "sce.layer_guess" \
+  --method robust --n_clusters 7 \
+  --knn_k 20 --resolution 0.65 \
+  --robust_res_list "0.60,0.62,0.64,0.65,0.66,0.67,0.69,0.71" \
+  --robust_seeds 7 --robust_smooth_iter 1 \
+  --w_spa 0.35 --w_emb 0.65 \
+  --power 1 --power_alpha 0.5 \
+  --refine_k 15 --refine_iter 3 \
+  --use_rep emb --calc_acc \
+  --out_prefix "/root/autodl-tmp/DLPFC/151510_Masterpiece_wspa0.35"
+
+--------------------------------------------------
+📊 Clustering Metrics Summary
+Number of clusters: 7
+NMI: 0.6684
+ARI: 0.6115
+ACC: 0.7410
+Silhouette Score: 0.0321
+Calinski–Harabasz: 187.4522
+Davies–Bouldin: 3.7585
+Largest cluster size: 1466.0000
+Smallest cluster size: 44.0000
+Cluster size ratio (max/min): 33.3182
+Cluster distribution entropy: 2.2416
+--------------------------------------------------

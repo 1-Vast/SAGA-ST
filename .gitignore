@@ -1,0 +1,53 @@
+# IDE and OS metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.env
+
+# Runtime logs
+*.log
+/outputs/
+/runs/
+
+# Large datasets and generated scientific artifacts.
+# Keep data in the documented paths locally, but do not commit raw data/results.
+/dataset/**
+!/dataset/
+!/dataset/README.md
+
+/demo/paper/others/
+/demo/**/cluster_results/
+
+*.h5ad
+*.h5
+*.npz
+*.npy
+*.rds
+*.tar
+*.tar.gz
+*.gz
+*.zip
+
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.tif
+*.tiff
+*.xlsx
+*.xls
+*.docx

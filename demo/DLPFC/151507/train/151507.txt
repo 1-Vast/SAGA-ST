@@ -1,0 +1,64 @@
+unset OMP_NUM_THREADS
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+export OPENBLAS_NUM_THREADS=2
+export NUMEXPR_NUM_THREADS=2
+export NUMBA_THREADING_LAYER=workqueue
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
+export CUDA_VISIBLE_DEVICES=0
+
+python -m model.main \
+  --h5 "/root/autodl-tmp/DLPFC/151507_dropNaN.h5ad" \
+  --out_prefix "/root/autodl-tmp/DLPFC/151507_tuning_v10/run_k10_a0.55_lr0.10_mr0.08" \
+  --graph_model KNN --k 10 \
+  --use_scanpy_workflow --pca_comps 64 \
+  --dim 64 --K 2 --embed_agg concat --hidden 512 \
+  --alpha 0.55 --topN 50 \
+  --lambda_recon 0.10 \
+  --mask_ratio_feat 0.08 \
+  --epochs 1000 \
+  --pos_per_epoch 18000 \
+  --layer_aware --no_layer_fallback \
+  --pseudo_layer_bins 7 --pseudo_layer_knn 20 \
+  --neg_layer_margin 2 --layer_gamma 2.0 \
+  --neg_hard_ratio 0.60 --neg_oversample 8 \
+  --normal_aware \
+  --normal_knn 10 --normal_margin 0.8 --normal_gamma 1.8 \
+  --activation prelu --scheduler \
+  --lr 5e-4 --weight_decay 5e-5 \
+  --seed 42 --device cuda
+
+python -m model.cluster \
+  --npz "/root/autodl-tmp/DLPFC/151507_tuning_v10/run_k10_a0.55_lr0.10_mr0.08.augK2_d64_for_cluster.npz" \
+  --h5 "/root/autodl-tmp/DLPFC/151507_dropNaN.h5ad" \
+  --label_key "sce.layer_guess" \
+  --method robust \
+  --use_rep emb \
+  --pca_dim 24 \
+  --n_clusters 7 \
+  --knn_k 10 \
+  --resolution 0.67 \
+  --robust_res_list "0.61,0.65,0.67,0.71" \
+  --w_spa 0.40 \
+  --w_emb 0.60 \
+  --robust_seeds 9 \
+  --robust_smooth_iter 0 \
+  --refine_k 15 \
+  --refine_iter 3 \
+  --merge_small --min_cluster_size 10 \
+  --calc_acc
+
+--------------------------------------------------
+📊 Clustering Metrics Summary
+Number of clusters: 7
+NMI: 0.6971
+ARI: 0.6484
+ACC: 0.7681
+Silhouette Score: 0.0239
+Calinski–Harabasz: 82.9173
+Davies–Bouldin: 5.8102
+Largest cluster size: 1409.0000
+Smallest cluster size: 55.0000
+Cluster size ratio (max/min): 25.6182
+Cluster distribution entropy: 2.3498
+--------------------------------------------------

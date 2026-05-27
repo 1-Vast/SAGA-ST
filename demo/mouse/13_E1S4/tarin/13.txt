@@ -1,0 +1,56 @@
+root@autodl-container-4a84418cb5-6dab42ff:~/autodl-tmp/week1# CUDA_VISIBLE_DEVICES=1 \
+python -m model.main \
+  --h5 "/root/autodl-tmp/dataset/Mouse/E13.5_E1S4.MOSTA.h5ad" \
+  --graph_model Radius \
+  --knn_k 20 \
+  --alpha 0.6 \
+  --topN 110 \
+  --use_scanpy_workflow \
+  --pca_comps 256 \
+  --dim 256 \
+  --K 4 \
+  --hidden 512 \
+  --epochs 200 \
+  --pos_per_epoch 70000 \
+  --embed_agg concat \
+  --lambda_recon 0.8 \
+  --mask_ratio_feat 0.3 \
+  --lambda_cls 0.0 \
+  --key_added dom \
+  --seed 42 \
+  --cluster_method none \
+  --activation prelu \
+  --scheduler \
+  --lr 0.001 \
+  --weight_decay 0.04
+
+>>> METHOD=louvain  knn_k=30  resolution=1.0
+Loading npz...
+Embedding shape: (73168, 1280)
+Building AnnData...
+Loading h5ad for labels: /root/autodl-tmp/dataset/Mouse/E13.5_E1S4.MOSTA.augK4_d256_none.h5ad
+Label 'annotation' merged for 73168 cells.
+Clustering with method=louvain...
+Computing clustering metrics...
+
+📊 Clustering Metrics Summary
+Number of clusters: 15
+NMI: 0.5393
+ARI: 0.3893
+ACC: 0.5132
+Silhouette Score: 0.0247
+Calinski–Harabasz: 1089.9353
+Davies–Bouldin: 2.9946
+Largest cluster size: 9573
+Smallest cluster size: 246
+Cluster size ratio (max/min): 38.915
+Cluster distribution entropy: 2.4546
+--------------------------------------------------
+
+Metrics saved to: /root/autodl-tmp/dataset/Mouse/cluster_results/E13.5_E1S4.MOSTA.augK4_d256_for_cluster_louvain_k30_r1.0.louvain.metrics.txt
+Labels saved to: /root/autodl-tmp/dataset/Mouse/cluster_results/E13.5_E1S4.MOSTA.augK4_d256_for_cluster_louvain_k30_r1.0.louvain.labels.txt
+Computing 2D projection...
+/root/miniconda3/lib/python3.10/site-packages/umap/umap_.py:1952: UserWarning: n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallelism.
+  warn(
+Embedding plot saved to: /root/autodl-tmp/dataset/Mouse/cluster_results/E13.5_E1S4.MOSTA.augK4_d256_for_cluster_louvain_k30_r1.0.louvain.UMAP_2d.png
+Spatial plot saved to: /root/autodl-tmp/dataset/Mouse/cluster_results/E13.5_E1S4.MOSTA.augK4_d256_for_cluster_louvain_k30_r1.0.louvain.spatial.png

@@ -1,0 +1,53 @@
+python -m model.main \
+  --h5 "/root/autodl-tmp/dataset/Mouse/E11.5_E1S1.MOSTA.h5ad" \
+  --graph_model Radius \
+  --k 15 \
+  --alpha 0.6 \
+  --topN 80 \
+  --use_scanpy_workflow \
+  --pca_comps 80 \
+  --dim 80 \
+  --K 4 \
+  --hidden 256 \
+  --epochs 120 \
+  --pos_per_epoch 30000 \
+  --embed_agg concat \
+  --knn_k 15 \
+  --key_added dom_compare \
+  --seed 42 \
+  --lambda_cls 0.0  \
+
+
+>>> METHOD=louvain  knn_k=50  resolution=0.4
+Loading npz...
+Embedding shape: (30124, 400)
+Building AnnData...
+Loading h5ad for labels: /root/autodl-tmp/dataset/Mouse/E11.5_E1S1.MOSTA.augK4_d80_none.h5ad
+Label 'annotation' merged for 30124 cells.
+Clustering with method=louvain...
+Computing clustering metrics...
+
+📊 Clustering Metrics Summary
+Number of clusters: 12
+NMI: 0.6557
+ARI: 0.5080
+ACC: 0.5982
+Silhouette Score: 0.0781
+Calinski–Harabasz: 743.2714
+Davies–Bouldin: 2.1279
+Largest cluster size: 4868
+Smallest cluster size: 709
+Cluster size ratio (max/min): 6.866
+Cluster distribution entropy: 2.3270
+--------------------------------------------------
+
+Metrics saved to: /root/autodl-tmp/dataset/Mouse/cluster_results/E11.5_E1S1.MOSTA.augK4_d80_for_cluster_louvain_k50_r0.4.louvain.metrics.txt
+Labels saved to: /root/autodl-tmp/dataset/Mouse/cluster_results/E11.5_E1S1.MOSTA.augK4_d80_for_cluster_louvain_k50_r0.4.louvain.labels.txt
+Computing 2D projection...
+/root/miniconda3/lib/python3.10/site-packages/umap/umap_.py:1952: UserWarning: n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallelism.
+  warn(
+Embedding plot saved to: /root/autodl-tmp/dataset/Mouse/cluster_results/E11.5_E1S1.MOSTA.augK4_d80_for_cluster_louvain_k50_r0.4.louvain.UMAP_2d.png
+Spatial plot saved to: /root/autodl-tmp/dataset/Mouse/cluster_results/E11.5_E1S1.MOSTA.augK4_d80_for_cluster_louvain_k50_r0.4.louvain.spatial.png
+
+
+

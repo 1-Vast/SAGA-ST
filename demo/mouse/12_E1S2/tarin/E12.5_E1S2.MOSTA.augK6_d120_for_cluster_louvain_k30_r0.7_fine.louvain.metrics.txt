@@ -1,0 +1,13 @@
+# method = louvain
+# n_clusters = 17
+n_clusters	17
+silhouette	0.1054946780204773
+calinski_harabasz	870.0765991210938
+davies_bouldin	2.186510283062574
+NMI	0.6487724668461059
+ARI	0.428729419698783
+ACC	0.5776203727127076
+largest_cluster_size	6677
+smallest_cluster_size	154
+cluster_size_ratio	43.357142857142854
+entropy	2.621848629181401

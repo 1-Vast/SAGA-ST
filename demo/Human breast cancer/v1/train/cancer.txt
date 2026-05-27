@@ -1,0 +1,155 @@
+root@autodl-container-4c034b95f8-bed1b650:~/autodl-tmp/cancer# python - << 'PY'
+import pandas as pd
+
+meta = pd.read_csv("/root/autodl-tmp/cancer/SEDR_analyses/data/BRCA1/metadata.tsv", sep="\t")
+
+print(meta.head())
+print("\n列名：", list(meta.columns))
+print("\n标签分布：")
+print(meta.iloc[:, -1].value_counts())
+PY
+                   ID         annot_type fine_annot_type
+0  AAACAAGTATCTCCCA-1  Surrounding tumor    Tumor_edge_5
+1  AAACACCAATAACTGC-1           Invasive           IDC_4
+2  AAACAGAGCGACTCCT-1            Healthy       Healthy_1
+3  AAACAGGGTCTATATT-1           Invasive           IDC_3
+4  AAACAGTGTTCCTGGG-1           Invasive           IDC_4
+
+列名： ['ID', 'annot_type', 'fine_annot_type']
+
+标签分布：
+fine_annot_type
+IDC_5           449
+IDC_4           442
+Healthy_1       411
+IDC_2           383
+DCIS/LCIS_3     364
+Tumor_edge_1    198
+Tumor_edge_6    182
+Tumor_edge_2    165
+IDC_6           163
+DCIS/LCIS_4     161
+Tumor_edge_3    159
+DCIS/LCIS_5     139
+DCIS/LCIS_1     135
+IDC_7           127
+Healthy_2        74
+Tumor_edge_5     69
+IDC_3            53
+Tumor_edge_4     50
+IDC_1            46
+DCIS/LCIS_2      28
+Name: count, dtype: int64
+root@autodl-container-4c034b95f8-bed1b650:~/autodl-tmp/cancer# 
+
+python - << 'PY'
+import scanpy as sc
+import pandas as pd
+
+data_dir = "/root/autodl-tmp/cancer/SEDR_analyses/data/BRCA1/V1_Human_Breast_Cancer_Block_A_Section_1"
+meta_path = "/root/autodl-tmp/cancer/SEDR_analyses/data/BRCA1/metadata.tsv"
+out_path = "/root/autodl-tmp/cancer/breast_with_gt.h5ad"
+
+# 读取 Visium
+adata = sc.read_visium(
+    data_dir,
+    count_file="filtered_feature_bc_matrix.h5"
+)
+adata.var_names_make_unique()
+
+# 读取标签
+meta = pd.read_csv(meta_path, sep="\t").set_index("ID")
+
+# 合并两级标签
+adata.obs["annot_type"] = meta.reindex(adata.obs_names)["annot_type"]
+adata.obs["fine_annot_type"] = meta.reindex(adata.obs_names)["fine_annot_type"]
+
+# 只保留有细粒度标签的 spot
+adata = adata[adata.obs["fine_annot_type"].notna()].copy()
+
+print("最终对象：", adata)
+print("\nobs 列：", list(adata.obs.columns))
+print("\n粗粒度标签分布：")
+print(adata.obs["annot_type"].value_counts())
+print("\n细粒度标签分布：")
+print(adata.obs["fine_annot_type"].value_counts())
+
+adata.write_h5ad(out_path)
+print("\n已保存到：", out_path)
+PY
+
+===========================================================================
+unset OMP_NUM_THREADS
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+export OPENBLAS_NUM_THREADS=2
+export NUMEXPR_NUM_THREADS=2
+export NUMBA_THREADING_LAYER=workqueue
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
+
+CUDA_VISIBLE_DEVICES=0 python -m model.main \
+  --h5 "/root/autodl-tmp/cancer/breast_with_gt.h5ad" \
+  --out_prefix "/root/autodl-tmp/cancer/breast_v1" \
+  --use_scanpy_workflow \
+  --pca_comps 64 \
+  --graph_model KNN \
+  --k 10 \
+  --alpha 0.50 \
+  --topN 72 \
+  --dim 96 \
+  --K 3 \
+  --hidden 256 \
+  --epochs 850 \
+  --pos_per_epoch 26000 \
+  --embed_agg concat \
+  --lr 4e-4 \
+  --weight_decay 0.008 \
+  --scheduler \
+  --lambda_recon 0.22 \
+  --mask_ratio_feat 0.16 \
+  --feat_mask_mode zero \
+  --recon_target pca \
+  --activation prelu \
+  --neg_adj_ratio 0.06 \
+  --neg_hard_ratio 0.12 \
+  --neg_oversample 6 \
+  --seed 42 \
+  --device cuda
+
+python -m model.cluster \
+  --npz "/root/autodl-tmp/cancer/breast_v1.augK3_d96_for_cluster.npz" \
+  --h5 "/root/autodl-tmp/cancer/breast_with_gt.h5ad" \
+  --method robust \
+  --label_key "fine_annot_type" \
+  --use_rep emb \
+  --n_clusters 20 \
+  --knn_k 15 \
+  --resolution 0.71 \
+  --robust_res_list "0.66,0.70,0.71,0.74,0.78" \
+  --w_spa 0.38 \
+  --w_emb 0.62 \
+  --power 1 \
+  --power_alpha 0.16 \
+  --refine_k 6 \
+  --refine_iter 1 \
+  --robust_seeds 9 \
+  --robust_smooth_iter 0 \
+  --merge_small \
+  --min_cluster_size 15 \
+  --progress
+
+--------------------------------------------------
+📊 Clustering Metrics Summary
+Number of clusters: 20
+NMI: 0.7362
+ARI: 0.6145
+Silhouette Score: 0.0382
+Calinski–Harabasz: 57.7116
+Davies–Bouldin: 2.6984
+Largest cluster size: 474.0000
+Smallest cluster size: 25.0000
+Cluster size ratio (max/min): 18.9600
+Cluster distribution entropy: 3.9710
+--------------------------------------------------
+
+
