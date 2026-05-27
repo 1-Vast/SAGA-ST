@@ -84,7 +84,7 @@ def _infer_layer_key(adata, user_layer_key, allow_fallback: bool = True):
     if not allow_fallback:
         return None
 
-    for k in ["sce.layer_guess", "layer_guess", "Ground Truth", "spatial_domain"]:
+    for k in ["Ground Truth", "spatial_domain"]:
         if k in adata.obs:
             return k
     return None
