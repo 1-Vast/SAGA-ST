@@ -106,21 +106,20 @@ Train SAGA-ST embeddings:
 python -m model.main \
   --h5 "outputs/DLPFC/151673/151673_dropNaN.h5ad" \
   --out_prefix "outputs/DLPFC/151673/151673_base" \
-  --graph_model KNN --k 15 \
+  --k 15 \
   --use_scanpy_workflow --pca_comps 64 \
-  --dim 64 --K 2 --hidden 512 --embed_agg concat \
-  --alpha 0.5 --topN 50 \
+  --hidden 512 \
   --lambda_recon 0.05 --mask_ratio_feat 0.2 \
-  --epochs 1200 --pos_per_epoch 20000 \
+  --epochs 1200 \
   --layer_aware --no_layer_fallback \
   --pseudo_layer_bins 7 --pseudo_layer_knn 20 \
-  --neg_layer_margin 2 --layer_gamma 4.0 \
+  --layer_gamma 4.0 \
   --neg_hard_ratio 0.6 --neg_oversample 8 \
   --normal_aware \
-  --normal_knn 15 --normal_margin 1.0 --normal_gamma 2.0 \
+  --normal_knn 15 \
   --activation prelu --scheduler \
   --lr 5e-4 --weight_decay 1e-4 \
-  --seed 42 --device cuda
+  --seed 42
 ```
 
 Cluster and evaluate:
@@ -141,7 +140,6 @@ python -m model.cluster \
   --merge_small \
   --min_cluster_size 30 \
   --calc_acc \
-  --progress \
   --out_prefix "outputs/DLPFC/151673/151673_base_merge30"
 ```
 
