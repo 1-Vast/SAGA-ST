@@ -173,7 +173,7 @@ def scanpy_workflow(
     min_gene: Optional[int] = 200,
     min_cell: Optional[int] = 30,
     call_hvg: Optional[bool] = True,
-    n_top_genes: Optional[Union[int, List]] = 2500,
+    n_top_genes: Optional[Union[int, List]] = 3000,
     batch_key: Optional[str] = None,
     n_comps: Optional[int] = 50,
     viz: Optional[bool] = True,

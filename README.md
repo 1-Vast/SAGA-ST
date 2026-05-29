@@ -57,14 +57,14 @@ python -m model.main \
   --k 15 \
   --use_scanpy_workflow --pca_comps 64 \
   --hidden 512 \
-  --lambda_recon 0.05 --mask_ratio_feat 0.2 \
+  --lambda_recon 0.05 --mask_ratio_feat 0.3 \
   --epochs 1200 \
   --layer_aware --no_layer_fallback \
   --pseudo_layer_bins 7 --pseudo_layer_knn 20 \
-  --layer_gamma 4.0 \
+  --layer_gamma 3.0 \
   --neg_hard_ratio 0.6 --neg_oversample 8 \
   --normal_aware \
-  --normal_knn 15 \
+  --normal_knn 30 \
   --activation prelu --scheduler \
   --lr 5e-4 --weight_decay 1e-4 \
   --seed 42

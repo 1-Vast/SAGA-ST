@@ -401,9 +401,9 @@ def main(a):
     if getattr(a, "normal_aware", False):
         normals, normal_scales = compute_local_normals_from_spatial(
             spatial_np,
-            knn_k=int(getattr(a, "normal_knn", 10)),
+            knn_k=int(getattr(a, "normal_knn", 30)),
         )
-        print(f"Normal-aware enabled. normal_knn={int(getattr(a, 'normal_knn', 10))}, "
+        print(f"Normal-aware enabled. normal_knn={int(getattr(a, 'normal_knn', 30))}, "
               f"normal_margin={float(getattr(a, 'normal_margin', 1.0))}, "
               f"normal_gamma={float(getattr(a, 'normal_gamma', 2.0))}")
 
@@ -662,7 +662,7 @@ if __name__ == "__main__":
     p.add_argument("--pseudo_layer_knn", type=int, default=18,help="k for spatial kNN graph used in pseudo-layer construction (only when pseudo_layer_bins>0).")
     p.add_argument("--pseudo_layer_binning", type=str, default="quantile", choices=["quantile", "uniform"],help="How to bin pseudo-depth into layers: quantile is more robust.")
     p.add_argument("--normal_aware", action="store_true",help="Use local normal-based cross-layer prior (self-supervised).")
-    p.add_argument("--normal_knn", type=int, default=10, help="kNN size for local normal estimation.")
+    p.add_argument("--normal_knn", type=int, default=30, help="kNN size for local normal estimation.")
     p.add_argument("--normal_margin", type=float, default=1.0, help="Min normalized normal-distance for negatives.")
     p.add_argument("--normal_gamma", type=float, default=2.0,help="Exp weight on normalized normal-distance for negatives.")
 
