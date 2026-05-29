@@ -1,4 +1,4 @@
-name: sp
+name: saga-st
 channels:
   - pytorch
   - nvidia
@@ -7,10 +7,10 @@ channels:
 dependencies:
   - python=3.10
   - pytorch=2.5.0
-  - torchvision
-  - torchaudio
+  - torchvision=0.20.*
+  - torchaudio=2.5.*
   - pytorch-cuda=12.1
-  - numpy<2.0
+  - numpy>=1.26,<2.0
   - scipy>=1.9
   - pandas>=1.5
   - numexpr>=2.8.4
@@ -21,16 +21,23 @@ dependencies:
   - tqdm>=4.65
   - scanpy>=1.9
   - anndata>=0.9
+  - h5py>=3.8
+  - umap-learn>=0.5
   - louvain>=0.8
   - leidenalg>=0.9
   - python-igraph>=0.10
+  - r-base>=4.3
+  - r-mclust>=6.0
   - rpy2>=3.5
   - pip>=23.0
   - pip:
       - nvidia-ml-py
-      # torch-geometric and its compiled deps should be installed manually
-      # against the exact PyTorch/CUDA build in this environment.
-      #
-      #   pip install torch-scatter torch-sparse torch-cluster torch-spline-conv \
-      #       -f https://data.pyg.org/whl/torch-2.5.0+cu121.html
-      #   pip install torch-geometric
+      - scikit-misc>=0.3
+      # PyG wheels must match PyTorch 2.5.0 + CUDA 12.1.
+      - --find-links https://data.pyg.org/whl/torch-2.5.0+cu121.html
+      - pyg_lib
+      - torch_scatter
+      - torch_sparse
+      - torch_cluster
+      - torch_spline_conv
+      - torch_geometric

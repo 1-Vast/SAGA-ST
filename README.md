@@ -12,12 +12,12 @@ SAGA-ST learns spot-level representations from gene expression and spatial neigh
 
 ```bash
 conda env create -f environment.yml
-conda activate sp
-
-pip install torch-scatter torch-sparse torch-cluster torch-spline-conv \
-  -f https://data.pyg.org/whl/torch-2.5.0+cu121.html
-pip install torch-geometric
+conda activate saga-st
 ```
+
+The environment file installs PyTorch 2.5.0 with CUDA 12.1, PyG compiled
+extensions, Scanpy preprocessing dependencies, and R `mclust` for the
+`--method mclust` clustering path.
 
 ## Dataset Downloads
 
