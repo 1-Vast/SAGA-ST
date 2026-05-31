@@ -1,18 +1,18 @@
-# SAGA-ST
+# SASG-ST
 
-SAGA-ST is the code repository for the accompanying paper. It provides the model implementation and reproduction commands for spatial transcriptomics representation learning and spatial domain clustering. Raw datasets and generated outputs are not stored in Git.
+SASG-ST is the code repository for the accompanying paper. It provides the model implementation and reproduction commands for spatial transcriptomics representation learning and spatial domain clustering. Raw datasets and generated outputs are not stored in Git.
 
 ## Overview
 
-SAGA-ST learns spot-level representations from gene expression and spatial neighborhood graphs. The workflow first builds a spatial graph, trains a graph representation model with augmentation and reconstruction objectives, then clusters the learned embeddings for downstream spatial domain analysis.
+SASG-ST learns spot-level representations from gene expression and spatial neighborhood graphs. The workflow first builds a spatial graph, trains a graph representation model with augmentation and reconstruction objectives, then clusters the learned embeddings for downstream spatial domain analysis.
 
-![SAGA-ST model overview](model.png)
+![SASG-ST model overview](model.png)
 
 ## Installation
 
 ```bash
 conda env create -f environment.yml
-conda activate saga-st
+conda activate sasg-st
 ```
 
 The environment file installs PyTorch 2.5.0 with CUDA 12.1, PyG compiled
@@ -48,7 +48,7 @@ export CUBLAS_WORKSPACE_CONFIG=:4096:8
 export CUDA_VISIBLE_DEVICES=0
 ```
 
-Train SAGA-ST embeddings:
+Train SASG-ST embeddings:
 
 ```bash
 python -m model.main \

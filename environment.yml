@@ -1,4 +1,4 @@
-name: saga-st
+name: sasg-st
 channels:
   - pytorch
   - nvidia
