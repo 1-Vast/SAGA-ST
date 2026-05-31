@@ -43,7 +43,7 @@ env/
 
 *.pdf
 *.png
-!/model.png
+!/overview.png
 *.jpg
 *.jpeg
 *.tif

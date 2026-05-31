@@ -6,7 +6,7 @@ SASG-ST is the code repository for the accompanying paper. It provides the model
 
 SASG-ST learns spot-level representations from gene expression and spatial neighborhood graphs. The workflow first builds a spatial graph, trains a graph representation model with augmentation and reconstruction objectives, then clusters the learned embeddings for downstream spatial domain analysis.
 
-![SASG-ST model overview](model.png)
+![SASG-ST model overview](overview.png)
 
 ## Installation
 
